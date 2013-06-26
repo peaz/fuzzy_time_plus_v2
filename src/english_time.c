@@ -154,7 +154,7 @@ void fuzzy_time(int hours, int minutes, char* line1, char* line2, char* line3) {
     strcat(line1,STR_HALF);
   }
   else if (minutes >=58 && minutes < 60) {
-    strcat(line1,STR_ALMOST);
+    strcat(line2,STR_ALMOST);
   }
 
   if(minutes == 0){
@@ -180,7 +180,9 @@ void fuzzy_time(int hours, int minutes, char* line1, char* line2, char* line3) {
       hours += 1;
       if (hours == 24) hours = 0;
       if (hours > 12) hours -= 12;
-      strcat(line2,STR_TO);
+      if (minutes < 58) {
+        strcat(line2,STR_TO);
+      }
     }
 
     if(hours == 0) {

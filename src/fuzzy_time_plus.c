@@ -49,7 +49,7 @@ static bool busy_animating_in = false;
 static bool busy_animating_out = false;
 const int line1_y = 25;
 const int line2_y = 58;
-const int line3_y = 91;
+const int line3_y = 93;
 
 GFont text_font;
 GFont text_font_light;
