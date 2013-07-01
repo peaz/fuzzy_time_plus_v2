@@ -213,7 +213,7 @@ void update_watch(PblTm* t) {
   if(t->tm_min != before.tm_min) {
 	  fuzzy_time(t->tm_hour, t->tm_min, new_time.line1, new_time.line2, new_time.line3);
 	   //update hour only if changed
-	if(t->tm_hour != before.tm_hour && strcmp(new_time.line1,cur_time.line1) != 0){
+	if(strcmp(new_time.line1,cur_time.line1) != 0){
 		updateLayer(&line1, 1);
 	}
 	  //update min1 only if changed
