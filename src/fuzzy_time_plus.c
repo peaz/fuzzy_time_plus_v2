@@ -43,6 +43,8 @@ TextLine line3;
 static TheTime cur_time;
 static TheTime new_time;
 
+static PblTm before;
+
 static char str_topbar[LINE_BUFFER_SIZE];
 static char str_bottombar[LINE_BUFFER_SIZE];
 static bool busy_animating_in = false;
@@ -181,12 +183,10 @@ void updateLayer(TextLine *animating_line, int line) {
 
 void update_watch(PblTm* t) {
   //Let's get the new time and date
-  fuzzy_time(t->tm_hour, t->tm_min, new_time.line1, new_time.line2, new_time.line3);
-  string_format_time(str_topbar, sizeof(str_topbar), "%A | %e %b", t);
-  string_format_time(str_bottombar, sizeof(str_bottombar), " %H%M:%S | Day %j", t);
+
+  string_format_time(str_bottombar, sizeof(str_bottombar), " %H:%M.%S | Day %j", t);
   
   //Let's update the top and bottom bar anyway - **to optimize later to only update top bar every new day.
-  text_layer_set_text(&topbarLayer, str_topbar);
   text_layer_set_text(&bottombarLayer, str_bottombar);
   
   /*
@@ -210,25 +210,33 @@ void update_watch(PblTm* t) {
     set_am_style();
   }
   */
+  if(t->tm_min != before.tm_min) {
+	  fuzzy_time(t->tm_hour, t->tm_min, new_time.line1, new_time.line2, new_time.line3);
+	   //update hour only if changed
+	if(t->tm_hour != before.tm_hour && strcmp(new_time.line1,cur_time.line1) != 0){
+		updateLayer(&line1, 1);
+	}
+	  //update min1 only if changed
+	if(strcmp(new_time.line2,cur_time.line2) != 0){
+		updateLayer(&line2, 2);
+	}
+	  //update min2 only if changed happens on
+	if(strcmp(new_time.line3,cur_time.line3) != 0){
+		updateLayer(&line3, 3);
+	}
+    if(t->tm_wday != before.tm_wday) {
+	  string_format_time(str_topbar, sizeof(str_topbar), "%A | %e %b", t);
+	  text_layer_set_text(&topbarLayer, str_topbar);
+	}
+	before = *t;
 
-  //update hour only if changed
-  if(strcmp(new_time.line1,cur_time.line1) != 0){
-    updateLayer(&line1, 1);
   }
-  //update min1 only if changed
-  if(strcmp(new_time.line2,cur_time.line2) != 0){
-    updateLayer(&line2, 2);
-  }
-  //update min2 only if changed happens on
-  if(strcmp(new_time.line3,cur_time.line3) != 0){
-    updateLayer(&line3, 3);
-  }
-}
+ }
 
 void init_watch(PblTm* t) {
   fuzzy_time(t->tm_hour, t->tm_min, new_time.line1, new_time.line2, new_time.line3);
   string_format_time(str_topbar, sizeof(str_topbar), "%A | %e %b", t);
-  string_format_time(str_bottombar, sizeof(str_bottombar), " %H%M:%S | Day %j", t);
+  string_format_time(str_bottombar, sizeof(str_bottombar), " %H:%M.%S | Day %j", t);
   
   text_layer_set_text(&topbarLayer, str_topbar);
   text_layer_set_text(&bottombarLayer, str_bottombar);
@@ -236,6 +244,8 @@ void init_watch(PblTm* t) {
   strcpy(cur_time.line1, new_time.line1);
   strcpy(cur_time.line2, new_time.line2);
   strcpy(cur_time.line3, new_time.line3);
+	
+  before = *t;
 
   /*
   if(t->tm_min == 0){
