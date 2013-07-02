@@ -43,8 +43,6 @@ TextLine line3;
 static TheTime cur_time;
 static TheTime new_time;
 
-static PblTm before;
-
 static char str_topbar[LINE_BUFFER_SIZE];
 static char str_bottombar[LINE_BUFFER_SIZE];
 static bool busy_animating_in = false;
@@ -181,9 +179,9 @@ void updateLayer(TextLine *animating_line, int line) {
   animation_schedule(&animating_line->layer_animation[0].animation);
 }
 
-void update_watch(PblTm* t) {
+void update_watch(PebbleTickEvent* event) {
   //Let's get the new time and date
-
+  PblTm* t = event->tick_time;
   string_format_time(str_bottombar, sizeof(str_bottombar), " %H:%M.%S | Day %j", t);
   
   //Let's update the top and bottom bar anyway - **to optimize later to only update top bar every new day.
@@ -210,7 +208,7 @@ void update_watch(PblTm* t) {
     set_am_style();
   }
   */
-  if(t->tm_min != before.tm_min) {
+  if((event->units_changed & MINUTE_UNIT) && (!(t->tm_min %5) || t->tm_min == 58)) {
 	  fuzzy_time(t->tm_hour, t->tm_min, new_time.line1, new_time.line2, new_time.line3);
 	   //update hour only if changed
 	if(strcmp(new_time.line1,cur_time.line1) != 0){
@@ -224,11 +222,10 @@ void update_watch(PblTm* t) {
 	if(strcmp(new_time.line3,cur_time.line3) != 0){
 		updateLayer(&line3, 3);
 	}
-    if(t->tm_wday != before.tm_wday) {
+    if(event->units_changed & DAY_UNIT) {
 	  string_format_time(str_topbar, sizeof(str_topbar), "%A | %e %b", t);
 	  text_layer_set_text(&topbarLayer, str_topbar);
 	}
-	before = *t;
 
   }
  }
@@ -244,8 +241,6 @@ void init_watch(PblTm* t) {
   strcpy(cur_time.line1, new_time.line1);
   strcpy(cur_time.line2, new_time.line2);
   strcpy(cur_time.line3, new_time.line3);
-	
-  before = *t;
 
   /*
   if(t->tm_min == 0){
@@ -372,7 +367,7 @@ void handle_second_tick(AppContextRef ctx, PebbleTickEvent *t) {
 
   if (busy_animating_out || busy_animating_in) return;
 
-  update_watch(t->tick_time);  
+  update_watch(t);  
 }
 
 // The main event/run loop for our app

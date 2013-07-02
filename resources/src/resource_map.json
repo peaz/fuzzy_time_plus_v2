@@ -1,14 +1,9 @@
 {
     "media": [
         {
-            "defName": "FONT_TWCENMT_39",
-            "type": "font",
-            "file": "fonts/twcenmt_light.ttf"
-        },
-        {
-            "defName": "FONT_TWCENMT_36_BOLD",
-            "type": "font",
-            "file": "fonts/twcenmt_bold.ttf"
+            "defName": "DUMMY",
+            "type": "raw",
+            "file": "data/resource_map.json"
         },
         {
             "defName": "IMAGE_MENU_ICON",
@@ -16,9 +11,14 @@
             "file": "images/menu_icon.png"
         },
         {
-            "defName": "DUMMY",
-            "type": "raw",
-            "file": "data/resource_map.json"
+            "defName": "FONT_TWCENMT_36_BOLD",
+            "type": "font",
+            "file": "fonts/twcenmt_bold.ttf"
+        },
+        {
+            "defName": "FONT_TWCENMT_39",
+            "type": "font",
+            "file": "fonts/twcenmt_light.ttf"
         }
     ],
     "friendlyVersion": "VERSION",
