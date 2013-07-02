@@ -44,6 +44,7 @@ static const char* STR_ITS = "it's";
 static const char* STR_NOW = "now";
 static const char* STR_ALMOST = "almost";
 static const char* STR_JUST = "just";
+static const char* STR_ALREADY = "already";
 
 void english_time_2lines(int hours, int minutes, char* str_hour, char* str_minute) {
     
@@ -154,16 +155,19 @@ void fuzzy_time(int hours, int minutes, char* line1, char* line2, char* line3) {
     strcat(line1,STR_HALF);
   }
   else if (minutes >=58 && minutes < 60) {
+	strcat(line1,STR_ITS);
     strcat(line2,STR_ALMOST);
   }
 
   if(minutes == 0){
     strcat(line1,STR_ITS);
     if(hours == 0) {
-      strcat(line2,STR_MIDNIGHT);
+	  strcat(line2, STR_ALREADY);
+      strcat(line3, STR_MIDNIGHT);
     }
     else if (hours == 12) {
-      strcat(line2, STR_NOON);
+      strcat(line2, STR_ALREADY);
+      strcat(line3, STR_NOON);
     }
     else {
       if (hours > 12) hours -= 12;
@@ -177,7 +181,7 @@ void fuzzy_time(int hours, int minutes, char* line1, char* line2, char* line3) {
       strcat(line2,STR_PAST);
     }
     else {
-      hours += 1;
+      hours++;
       if (hours == 24) hours = 0;
       if (hours > 12) hours -= 12;
       if (minutes < 58) {

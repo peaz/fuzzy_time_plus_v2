@@ -208,7 +208,7 @@ void update_watch(PebbleTickEvent* event) {
     set_am_style();
   }
   */
-  if((event->units_changed & MINUTE_UNIT) && (!(t->tm_min %5) || t->tm_min == 58)) {
+  if((event->units_changed & MINUTE_UNIT) && (!(t->tm_min %5) || t->tm_min == 58 || t->tm_min == 1)) {
 	  fuzzy_time(t->tm_hour, t->tm_min, new_time.line1, new_time.line2, new_time.line3);
 	   //update hour only if changed
 	if(strcmp(new_time.line1,cur_time.line1) != 0){
